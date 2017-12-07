@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const pg = require('pg');
 const PORT = process.env.PORT || 5050;
-const conString = `postgres://localhost:5432/database_name`;
+const conString = `postgres://localhost:5432/database_nagit 
 const client = new pg.Client(process.env.DATABASE_URL);
 // the client is hidden inside pg  // Heroku will include the database_url
 

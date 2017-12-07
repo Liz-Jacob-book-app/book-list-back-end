@@ -7,9 +7,9 @@ Back end for book list
     create the database
     seed data
     design a schema
+      book_id:
       title:
       author:
-      book_id:
       isbn:
       image_url:
       description:
