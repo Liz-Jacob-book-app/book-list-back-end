@@ -9,7 +9,7 @@ Back end for book list
     design a schema
       title:
       author:
-      author_id:
+      book_id:
       isbn:
       image_url:
       description:
