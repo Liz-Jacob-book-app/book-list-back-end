@@ -4,11 +4,11 @@ const app = express();
 const fs = require('fs');
 const pg = require('pg');
 
-const PORT = process.env.PORT || 5050;
-const conString = `postgres://localhost:5432/books-app`;
-const client = new pg.Client(process.env.DATABASE_URL);
-// the client is hidden inside pg  // Heroku will include the database_url
+const PORT = process.env.PORT || 3000;
+const conString = (`postgres://localhost:5432/books-app`);
 
+const client = new pg.Client(process.env.DATABASE_URL || conString);
+// the client is hidden inside pg  // Heroku will include the database_url
 client.connect();
 
 app.get(`/api/v1/books`, (req,res) => {
@@ -48,7 +48,7 @@ app.listen(PORT, () => {
 //      author VARCHAR(50),
 //      isbn VARCHAR(50),
 //      "imageUrl" VARCHAR(255),
-//      description VARCHAR(255));`
+//      description VARCHAR);`
 //    )
 //        .then(loadBooks)
 //        .catch(console.error);
