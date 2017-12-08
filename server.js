@@ -3,6 +3,12 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const pg = require('pg');
+const fs = require('fs');
+const cors = require('cors');
+const PORT = process.env.PORT || 5000;
+const constring = 'postgres://localhost:5432/book-app';
+const client = new pg.Client(process.env.DATABASE_URL || constring);
+// the client is hidden inside pg  // Heroku will include the database_url
 
 const PORT = process.env.PORT || 3000;
 const conString = (`postgres://localhost:5432/books-app`);
@@ -11,16 +17,21 @@ const client = new pg.Client(process.env.DATABASE_URL || conString);
 // the client is hidden inside pg  // Heroku will include the database_url
 client.connect();
 
-app.get(`/api/v1/books`, (req,res) => {
+app.get('/api/v1/books', (req, res) => {
     client.query(`SELECT * FROM books;`)
         .then(data => res.send(data.rows));
+    console.log('asdf');
     // n.b. data is returned as json data in console
 });
 
-app.get(`/api/v1/#/:book`, (req, res) => {
-    client.query(`SELECT * FROM books WHERE book = $1`, [req.params.books])
-        .then(data => res.send(data.rows));
+app.get('/', (req, res) => {
+    res.send('hello world');
 });
+
+// app.get(`/api/v1/books:`, (req, res) => {
+//     client.query(`SELECT * FROM books WHERE book = $1`, [req.params.books])
+//         .then(data => res.send(data.rows));
+// });
 
 app.listen(PORT, () => {
     console.log(`listening for API requests to port $(PORT)`);
