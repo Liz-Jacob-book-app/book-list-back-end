@@ -17,7 +17,8 @@ app.use(cors());
 
 app.get('/api/v1/books', (req, res) => {
     client.query(`SELECT * FROM books;`)
-        .then(data => res.send(data.rows));
+        .then(data => res.send(data.rows))
+        .catch(console.error);
     console.log('asdf');
     // n.b. data is returned as json data in console
 });
@@ -30,17 +31,14 @@ app.get(`/api/v1/books/:book_id`, (req, res) => {
     client.query(
         `SELECT * FROM books WHERE book_id = $1`,
         [
-            req.params.books,
-            req.params.books,
-            req.params.books,
-            req.params.books,
-            req.params.books,
+            req.params.book_id,
         ])
-        .then(data => res.send(data.rows));
+        .then(data => res.send(data.rows))
+        .catch(console.error);
 });
 
 app.listen(PORT, () => {
-    console.log(`listening for API requests to port $(PORT)`);
+    console.log(`listening for API requests to port ${PORT}`);
 });
 
 ///// DATABASE HANDLER //////////
