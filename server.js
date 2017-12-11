@@ -5,23 +5,59 @@ const app = express();
 const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5000;
-const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
-// const conString = 'postgres://localhost:5432/book-app';
+// const conString = 'postgres://yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
+const conString = 'postgres://postgres:perezed11@localhost:5432/books';
 const client = new pg.Client(process.env.DATABASE_URL || conString);
 // the client is hidden inside pg  // Heroku will include the database_url
 
 client.connect();
 
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/api/v1/books', (req, res) => {
     client.query(`SELECT * FROM books;`)
         .then(data => res.send(data.rows))
         .catch(console.error);
-    console.log('asdf');
+    console.log('in get');
     // n.b. data is returned as json data in console
 });
+
+// app.put('/api/v1/books/:id', (req, res) => {
+//     client.query(`
+//     UPDATE books SET author=$1 WHERE id=$2
+//     `, [
+//             req.body.author,
+//             req.params.id
+//         ])
+//         .then(data => res.status(200).send('asd'));
+// });
+
+app.post('/api/v1/books', (req, res) => {
+    console.log(req.body);
+    client.query(`
+    INSERT INTO books (title, author, isbn, "imageUrl", description)
+    VALUES ($1, $2, $3, $4, $5);
+    `, [
+            req.body.title,
+            req.body.author,
+            req.body.isbn,
+            req.body.imageUrl,
+            req.body.description
+        ])
+        .then(data => res.status(200).send('asd'))
+        .catch(console.error);
+});
+
+// app.delete('/api/v1/cards/:id', (req, res) => {
+//     client.query(`
+//     `
+
+//     )
+// });
 
 app.get('/', (req, res) => {
     res.send('hello world');
