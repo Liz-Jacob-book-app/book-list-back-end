@@ -5,6 +5,8 @@ const fs = require('fs');
 const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+
 const PORT = process.env.PORT || 5000;
 const constring = 'postgres://localhost:5432/book-app';
 const client = new pg.Client(process.env.DATABASE_URL || constring);
