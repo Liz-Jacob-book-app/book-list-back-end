@@ -5,9 +5,10 @@ const app = express();
 const pg = require('pg');
 const fs = require('fs');
 const cors = require('cors');
-const PORT = process.env.PORT || 5000;
-const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
-// const conString = 'postgres://localhost:5432/book-app';
+// const PORT = process.env.PORT || 5000;
+// const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
+const PORT = process.env.PORT || 3000;
+const conString = 'postgres://localhost:5432/book-app';
 const client = new pg.Client(process.env.DATABASE_URL || conString);
 // the client is hidden inside pg  // Heroku will include the database_url
 
