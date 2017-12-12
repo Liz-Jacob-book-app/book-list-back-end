@@ -26,15 +26,19 @@ app.get('/api/v1/books', (req, res) => {
     // n.b. data is returned as json data in console
 });
 
-// app.put('/api/v1/books/:id', (req, res) => {
-//     client.query(`
-//     UPDATE books SET author=$1 WHERE id=$2
-//     `, [
-//             req.body.author,
-//             req.params.id
-//         ])
-//         .then(data => res.status(200).send('asd'));
-// });
+app.put('/api/v1/books/:id', (req, res) => {
+    client.query(`
+    UPDATE books SET title=$1, author=$2, isbn=$3, "imageUrl=$4", description=$5 
+    WHERE id=$6
+    `, [
+            req.body.title,
+            req.body.author,
+            req.body.isbn,
+            req.body.imageUrl,
+            req.body.description
+        ])
+        .then(data => res.status(200).send('put request complete!'));
+});
 
 app.post('/api/v1/books', (req, res) => {
     console.log(req.body);
