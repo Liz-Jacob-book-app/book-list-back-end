@@ -1,8 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const pg = require('pg');
 const fs = require('fs');
+const pg = require('pg');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -15,11 +15,12 @@ const conString = (`postgres://localhost:5432/books`);
 const client = new pg.Client(process.env.DATABASE_URL || conString);
 // Liz's local connect string
 
-client.connect();
+const PORT = process.env.PORT || 3000;
+const conString = (`postgres://localhost:5432/books-app`);
 
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+const client = new pg.Client(process.env.DATABASE_URL || conString);
+// the client is hidden inside pg  // Heroku will include the database_url
+client.connect();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -96,42 +97,3 @@ app.delete('/books', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server starter on Port ${PORT}`);
 });
-
-loadDB();
-
-//////// DATABASE LOADERS ////////
-
-function loadBooks() {
-    client.query('SELECT COUNT(*) FROM books')
-        .then(result => {
-            if(!parseInt(result.rows[0].count)) {
-                fs.readFile('./book-list-server/data/books.json', (err, fd) => {
-                    JSON.parse(fd.toString()).forEach(ele => {
-                        client.query(`
-            INSERT INTO
-            books(book_id, title, author, isbn, "imageUrl", description)
-            WHERE book_id = $1;`,
-                            [ele.book_id, ele.title, ele.author, ele.isbn, ele.imageUrl, ele.description]
-                        )
-                            .catch(console.error);
-                    });
-                });
-            }
-        });
-}
-
-function loadDB() {
-    client.query(`
-    CREATE TABLE IF NOT EXISTS
-    books (
-      book_id SERIAL PRIMARY KEY,
-      title VARCHAR(255) NOT NULL,
-      isbn VARCHAR(50)
-      author VARCHAR(50),
-      "imageUrl",
-      description TEXT NOT NULL
-    );`
-    )
-        .then(loadBooks)
-        .catch(console.error);
-}
