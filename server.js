@@ -1,40 +1,30 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const fs = require('fs');
 const pg = require('pg');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const superagent = require('superagent');
-const G_API_KEY = process.env.PORT;
-
-//const PORT = process.env.PORT || 5000;
-//const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
-// Jacob's local connect string
-
-const PORT = process.env.PORT || 3000;
-const conString = (`postgres://localhost:5432/books`);
-const client = new pg.Client(process.env.DATABASE_URL || conString);
-// Liz's local connect string
-
-const PORT = process.env.PORT || 3000;
-const conString = (`postgres://localhost:5432/books-app`);
-
-const client = new pg.Client(process.env.DATABASE_URL || conString);
-// the client is hidden inside pg  // Heroku will include the database_url
-client.connect();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('/'));
+app.use(cors());
 
-app.get('/search', (req, res) => {
-    const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=intitle:plants star&key=AIzaSyC15YhYq4uguEcPkzx7byzQQjKxiljDbuo'
-    const searchFor = req.body.terms;
-    superagent.get(`${googleUrl}${searchFor}&key=${G_API_KEY}`).end(err,resp => {
-        res.send(resp);
-    });
-});
+const PORT = process.env.PORT || 5000;
+// const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
+const conString = 'postgres://postgres:perezed11@localhost:5432/books';
+// const conString = 'postgres://localhost:5432/books';
+
+const client = new pg.Client(process.env.DATABASE_URL || conString);
+client.connect();
+
+// app.get('/search', (req, res) => {
+//     const googleUrl = 'https://www.googleapis.com/books/v1/volumes?q=intitle:plants star&key=AIzaSyC15YhYq4uguEcPkzx7byzQQjKxiljDbuo'
+//     const searchFor = req.body.terms;
+//     superagent.get(`${googleUrl}${searchFor}&key=${G_API_KEY}`).end(err,resp => {
+//         res.send(resp);
+//     });
+// });
 
 app.get('/api/v1/books', (req, res) => {
     client.query(`SELECT * FROM books;`)
@@ -89,20 +79,20 @@ app.put('/books', (req, res) => {
 
 });
 
-app.delete('/books/:id', (req, res) => {
-    client.query(
-        `DELETE FROM books WHERE book_id=$1;`,
-        [req.params.book_id]
-    )
-        .then(() => res.send('Delete complete'))
-        .catch(console.error);
-});
+// app.delete('/books/:id', (req, res) => {
+//     client.query(
+//         `DELETE FROM books WHERE book_id=$1;`,
+//         [req.params.book_id]
+//     )
+//         .then(() => res.send('Delete complete'))
+//         .catch(console.error);
+// });
 
-app.delete('/books', (req, res) => {
-    client.query('DELETE FROM books')
-        .then(() => res.send('Delete complete'))
-        .catch(console.error);
-});
+// app.delete('/books', (req, res) => {
+//     client.query('DELETE FROM books')
+//         .then(() => res.send('Delete complete'))
+//         .catch(console.error);
+// });
 
 app.listen(PORT, () => {
     console.log(`Server starter on Port ${PORT}`);
