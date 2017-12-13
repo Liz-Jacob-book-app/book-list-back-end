@@ -12,9 +12,9 @@ app.use(express.static('/'));
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
-// const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
+const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
 // const conString = 'postgres://postgres:perezed11@localhost:5432/books';
-const conString = 'postgres://localhost:5432/books';
+// const conString = 'postgres://localhost:5432/books';
 
 const client = new pg.Client(process.env.DATABASE_URL || conString);
 client.connect();
@@ -36,6 +36,7 @@ app.get('/search', (req, res) => {
                     description: book.volumeInfo.description
                 };
             });
+            console.log(smallBooks);
             res.send(smallBooks);
         });
 });
