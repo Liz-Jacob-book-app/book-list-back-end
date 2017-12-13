@@ -11,8 +11,8 @@ app.use(express.static('/'));
 app.use(cors());
 
 const PORT = process.env.PORT || 5000;
-// const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
-const conString = 'postgres://postgres:perezed11@localhost:5432/books';
+const conString = 'postgres://postgres:perezed11//yxsatybwxtuuyr:f6a87f989873168a9547c26632dc59187d04a6c293870231c006f8b586298262@ec2-54-204-13-130.compute-1.amazonaws.com:5432/d97ekvb8qmegtj&ssl=true';
+// const conString = 'postgres://postgres:perezed11@localhost:5432/books';
 // const conString = 'postgres://localhost:5432/books';
 
 const client = new pg.Client(process.env.DATABASE_URL || conString);
@@ -43,10 +43,10 @@ app.get(`/api/v1/books/:id`, (req, res) => {
 app.post('/books', (req, res) => {
     client.query(
         `INSERT INTO
-  books(book_id, title, author, isbn, "imageUrl", description)
-  VALUES ($1, $2, $3, $4, $5, $6);`,
+  books(title, author, isbn, "imageUrl", description)
+  VALUES ($1, $2, $3, $4, $5);`,
         [
-            req.body.book_id,
+            // req.body.book_id,
             req.body.title,
             req.body.author,
             req.body.isbn,
@@ -55,7 +55,7 @@ app.post('/books', (req, res) => {
         ],
         function(err) {
             if (err) console.error(err);
-            res.send('insert complete');
+            res.send(data => res.status(201).send(data.rows));
         }
     );
 });
@@ -63,18 +63,18 @@ app.post('/books', (req, res) => {
 app.put('/books', (req, res) => {
     client.query(`
       UPDATE books
-      SET book_id=$1, title=$2, author=$3, isbn=$4, "imageUrl"=$5, description=$6
+      SET title=$1, author=$2, isbn=$3, "imageUrl"=$4, description=$5 WHERE book_id=$1
       `,
         [
-            req.body.book_id,
             req.body.title,
             req.body.author,
             req.body.isbn,
             req.body.imageUrl,
             req.body.description,
+            req.params.book_id
         ]
     )
-        .then(() => res.send('Update complete'))
+        .then(data => res.status(200).send('put'))
         .catch(console.error);
 
 });
